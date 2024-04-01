@@ -1,0 +1,34 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://167.71.198.237:3306/screen_management
+    username: tanhm
+    password: HoangTan28##
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  port: 8888
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+jwt:
+    secret: 75e4c053015f93d43f87e5dcbb4f3c5046a2f65a21f17221474f289e8219d5613ecd59d7610995634c960cbcb8de241c26d65803922fc4704c8c607ce80c5a0646254d6c93ecc580c688f0de8a5fa951e7fe76430ecf7abca3a2673ce72438473d3a3ccd17865a5bf380d835c72872eed6e10c33c05b52d567fcb14a1fc9f08809322f013a53490bcc64fd67e6e8c822a56ccac8ce0804bf098193aba51a963285bf465d091d8878f601dbf49313800cb5e8303bcf1f0bc9fcb3b5a9ee97176797e9d514f28a0f9ccf2377387cda89c27503d6ff15ca145e54795466394d0b3b8121fef8919095dd623770ac41f049f92954fdfaded8ecb0f05d14c7dba8425f
+upload:
+  directory: /var/www/html/upload/
