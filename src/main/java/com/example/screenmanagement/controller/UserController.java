@@ -1,7 +1,10 @@
 package com.example.screenmanagement.controller;
 
 import com.example.screenmanagement.common.BaseResponse;
+import com.example.screenmanagement.model.request.device.SearchDeviceReq;
 import com.example.screenmanagement.model.request.user.CreateUserRequest;
+import com.example.screenmanagement.model.request.user.SearchUserReq;
+import com.example.screenmanagement.model.request.user.UpdateUserReq;
 import com.example.screenmanagement.service.impl.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @CrossOrigin
 public class UserController {
+
     @Autowired
     UserService userService;
 
@@ -29,4 +33,23 @@ public class UserController {
         BaseResponse response = userService.createUser(req);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping(value = "/edit")
+    public ResponseEntity<Object> editUser(@RequestBody @Valid UpdateUserReq req) {
+        BaseResponse baseResponse = userService.updateUser(req);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> getDetailUser(@PathVariable String id) {
+        BaseResponse detailUser = userService.getDetailUser(id);
+        return ResponseEntity.ok(detailUser);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<BaseResponse> search(@RequestBody @Valid SearchUserReq req) {
+        BaseResponse baseResponse = userService.search(req);
+        return ResponseEntity.ok(baseResponse);
+    }
+
 }

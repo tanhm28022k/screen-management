@@ -2,6 +2,7 @@ package com.example.screenmanagement.model.request.user;
 
 import com.example.screenmanagement.utility.Constant;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,5 +41,7 @@ public class CreateUserRequest {
     @NotNull(message = "Birthday is required")
     private Date birthday;
 
+    @NotBlank(message = "GroupId can not blank")
+    private String groupId;
 
 }

@@ -1,7 +1,6 @@
 package com.example.screenmanagement.controller;
 
 import com.example.screenmanagement.common.BaseResponse;
-import com.example.screenmanagement.service.impl.DeviceService;
 import com.example.screenmanagement.service.impl.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ public class UploadDocumentController {
     DocumentService documentService;
 
     @PostMapping()
-    public ResponseEntity<BaseResponse> uploadDocument(@ModelAttribute List<MultipartFile> files) {
+    public ResponseEntity<BaseResponse> uploadDocument(@RequestPart(value = "files") List<MultipartFile> files) {
         BaseResponse baseResponse = documentService.uploadDocument(files);
         return ResponseEntity.ok(baseResponse);
     }
@@ -28,4 +27,5 @@ public class UploadDocumentController {
         BaseResponse baseResponse = documentService.getList();
         return ResponseEntity.ok(baseResponse);
     }
+
 }

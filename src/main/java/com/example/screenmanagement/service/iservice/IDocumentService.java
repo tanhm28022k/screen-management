@@ -9,4 +9,8 @@ public interface IDocumentService {
     BaseResponse uploadDocument(List<MultipartFile> files);
 
     BaseResponse getList();
+
+    BaseResponse getById(String id);
+
+
 }
