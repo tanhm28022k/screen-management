@@ -24,6 +24,9 @@ public class Document {
     @Column(name = "name", length = 150, nullable = false)
     private String name;
 
+    @Column(name = "original_name", length = 150, nullable = false)
+    private String originalName;
+
     @Column(name = "path")
     private String path;
 
@@ -36,11 +39,20 @@ public class Document {
     @Column(name = "uploaded_time")
     private Long uploadedTime;
 
+    @Column(name = "long_time")
+    private Long longTime;
+
     @Column(name = "status")
     private String status = Constant.STATUS.ACTIVE.name();
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted = Boolean.FALSE ;
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "capacity")
+    private String capacity;
+
+    @Column(name = "display_type")
+    private String displayType;
 
     @Column(name = "user_id")
     private String userId;
@@ -52,5 +64,8 @@ public class Document {
     @UpdateTimestamp
     @Column(name = "upd_datetime")
     private Date updDatetime;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
 
 }

@@ -1,8 +1,6 @@
 
 z
 Jsrc/main/java/com/example/screenmanagement/repository/GroupRepository.java,f\b\fb81b825e1b5231615bf51c3f60a0425d2f75250
-p
-@src/main/java/com/example/screenmanagement/entity/UserGroup.java,7\c\7cc1c9a5f5cf246bbb20e79799fc059402a2dfd0
 Å
 Qsrc/main/java/com/example/screenmanagement/repository/RegionDeviceRepository.java,9\4\9419ca46f4279887937d7aa68781f86a0cbbf152
 m
@@ -13,8 +11,6 @@ Msrc/main/java/com/example/screenmanagement/service/iservice/IUserService.java,
 Xsrc/main/java/com/example/screenmanagement/repository/impl/UserRepositoryCustomImpl.java,e\e\eebd70056f75bb81ee526a30db27db282da88a3a
 Ü
 Vsrc/main/java/com/example/screenmanagement/repository/custom/UserRepositoryCustom.java,d\6\d638907f2e18199b8feea24c0bcb06dafbbb8c09
-s
-Csrc/main/java/com/example/screenmanagement/common/BaseResponse.java,3\4\34ed253cc32a9426b1192170d69ea98a61f405f8
 Ü
 Vsrc/main/java/com/example/screenmanagement/config/JwtAuthenticationFailureHandler.java,4\c\4ca6782e2ab6d6350fee1c4163ace8a4407d500b
 Å
@@ -37,25 +33,17 @@ k
 ;src/main/java/com/example/screenmanagement/entity/User.java,a\5\a5e7448cda48524ce4b5b656940a9eb99c9dd8d7
 y
 Isrc/main/java/com/example/screenmanagement/controller/UserController.java,5\6\56d6f10a0e9fa471d85473b31d53b237a4f1a24e
-o
-?src/main/java/com/example/screenmanagement/entity/Document.java,b\0\b026296239705aaaa2d3eb8f49e693114b71ac12
 p
 @src/main/java/com/example/screenmanagement/utility/Constant.java,1\9\191664ea8196b3d26e7672cbe6aade2569a9e980
 u
 Esrc/main/java/com/example/screenmanagement/utility/SecurityUtils.java,d\9\d90d5a531c0878317e63af9c81553f71d7004607
-{
-Ksrc/main/java/com/example/screenmanagement/controller/RegionController.java,2\3\236a461525f8c0d6ae3af71a2ac5df5e5f240743
 ~
 Nsrc/main/java/com/example/screenmanagement/service/iservice/RegionService.java,2\1\212de51decd8460c4f3c987ac7696683bd3c7188
-~
-Nsrc/main/java/com/example/screenmanagement/service/impl/RegionServiceImpl.java,c\c\cc03c429d17d0340715494b7f95e84a690d8cc89
 u
 Esrc/main/java/com/example/screenmanagement/utility/UtilsValidate.java,7\5\7528beb09dd61c301b73faa4d704995cb09c3f33
 x
 Hsrc/main/java/com/example/screenmanagement/service/impl/UserService.java,2\3\23c9e78ecd7491a1c2e216380176624bfffaa681
 Ñ
 Tsrc/main/java/com/example/screenmanagement/model/request/device/SearchDeviceReq.java,8\4\842d8cd5da6046d71d6bb89ce7ea4c634f486aaa
-}
-Msrc/main/java/com/example/screenmanagement/controller/DocumentController.java,b\7\b77d9bf746d54f659767bddc62ef5dff67648788
 Å
 Qsrc/main/java/com/example/screenmanagement/service/iservice/IDocumentService.java,5\7\572c3cc14bab3b92987c3a144b8564b7fa1d5a1e
