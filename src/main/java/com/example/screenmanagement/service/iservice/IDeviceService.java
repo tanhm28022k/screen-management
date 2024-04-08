@@ -23,5 +23,5 @@ public interface IDeviceService {
 
     BaseResponse deleteDevices(List<String> ids);
 
-    BaseResponse moveDevices(MoveDeviceReq req);
+    BaseResponse moveDevices(List<MoveDeviceReq> req);
 }

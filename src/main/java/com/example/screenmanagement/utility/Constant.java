@@ -29,11 +29,14 @@ public class Constant {
         DEACTIVE
     }
 
-
     public enum GENDER {
         MALE,
         FEMALE,
         OTHER
+    }
+
+    public static class DefaultValue{
+        public static final String REGION_DEFAULT_INIT_SAVE_DEVICE = "8de6fe3a-fcc7-41b6-8e3b-36aa1c0cdc3b";
     }
 
 }

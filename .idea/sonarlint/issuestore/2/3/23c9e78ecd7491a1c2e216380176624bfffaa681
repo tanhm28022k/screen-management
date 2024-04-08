@@ -1,0 +1,13 @@
+
+a	java:S112Ç"FDefine and throw a dedicated exception instead of using a generic one.(ÎÎÿøÿÿÿÿ
+a	java:S112Ì"FDefine and throw a dedicated exception instead of using a generic one.(ÅğĞÕøÿÿÿÿ
+F
+java:S3740"/Provide the parametrized type for this generic.(…¾ºé
+n
+java:S1192w"SDefine a constant instead of duplicating this literal "Lá»—i há»‡ thá»‘ng" 3 times.(©š‚üıÿÿÿÿ
+^
+java:S1192U"HDefine a constant instead of duplicating this literal "Success" 3 times.(©¾ƒî
+K
+java:S2201Ã"/The return value of "orElseThrow" must be used.(÷ÅÒúÿÿÿÿ
+I
+java:S1144N"3Remove this unused private "getAuthorities" method.(¶¥¦ù

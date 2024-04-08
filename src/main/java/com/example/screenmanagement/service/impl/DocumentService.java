@@ -3,15 +3,22 @@ package com.example.screenmanagement.service.impl;
 import com.example.screenmanagement.common.BaseResponse;
 import com.example.screenmanagement.common.Result;
 import com.example.screenmanagement.entity.Document;
+import com.example.screenmanagement.entity.User;
+import com.example.screenmanagement.model.request.device.SearchDeviceReq;
+import com.example.screenmanagement.model.response.device.DeviceDtoResponse;
 import com.example.screenmanagement.repository.DeviceRepository;
 import com.example.screenmanagement.repository.DocumentRepository;
+import com.example.screenmanagement.repository.impl.BaseResultSelect;
 import com.example.screenmanagement.service.iservice.IDocumentService;
 import com.example.screenmanagement.utility.Constant;
 import com.example.screenmanagement.utility.JwtTokenUtil;
+import com.example.screenmanagement.utility.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -23,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import static com.example.screenmanagement.utility.Constant.ERROR_CODE_MAP.SAVE_DEVICE_ERROR;
+import static com.example.screenmanagement.utility.Constant.ERROR_CODE_MAP.SEARCH_DEVICE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +60,7 @@ public class DocumentService implements IDocumentService {
                 String uploadFilePath = getUploadFilePath(multipartFile);
                 if (uploadFilePath != null) {
                     Document document = new Document();
-                    document.setName(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
+                    document.setName(StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename())));
                     document.setPath(uploadFilePath);
                     document.setSize(multipartFile.getSize());
                     document.setType(getFileExtension(Objects.requireNonNull(multipartFile.getOriginalFilename())));
@@ -108,14 +118,43 @@ public class DocumentService implements IDocumentService {
             return baseResponse;
         } catch (Exception ex) {
             logger.info("get document error : {} ", ex.getMessage());
-            baseResponse.setResult(new Result(Constant.ERROR_CODE_MAP.SAVE_DEVICE_ERROR.getMessage(), false, Constant.ERROR_CODE_MAP.SAVE_DEVICE_ERROR.getCode()));
+            logger.info("get document error : {} ", ex.getMessage());
+            baseResponse.setResult(new Result(ex.getMessage(), false, "Lỗi hệ thống"));
             return baseResponse;
         }
     }
 
     @Override
     public BaseResponse getById(String id) {
-        return null;
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setResult(Result.OK("Success"));
+        try {
+            Document document = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy document với id: " + id));
+            baseResponse.setData(document);
+            return baseResponse;
+        } catch (Exception ex) {
+            logger.info("get document error : {} ", ex.getMessage());
+            baseResponse.setResult(new Result(ex.getMessage(), false, "Lỗi hệ thống"));
+            return baseResponse;
+        }
+    }
+
+    @Override
+    public BaseResponse searchDocument(SearchDeviceReq req) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setResult(Result.OK("Success"));
+//        try {
+//            String userId = tokenUtil.getFromAuthentication().getId();
+//            BaseResultSelect baseResultSelect = deviceCustomRepository.searchData(req.getName(),
+//                    req.getPage(), req.getSize(), fromAuthentication.getId(), req.getRegionId());
+//            PageImpl<DeviceDtoResponse> deviceDtoResponses = new PageImpl<DeviceDtoResponse>(baseResultSelect.getListData(),
+//                    PageRequest.of(req.getPage(), req.getSize()), baseResultSelect.getCount());
+//            baseResponse.setData(deviceDtoResponses);
+//        } catch (Exception ex) {
+//            logger.info("searchDevice has errors...{}", ex.getMessage());
+//            baseResponse.setResult(new Result(SEARCH_DEVICE_ERROR.getMessage(), false, SAVE_DEVICE_ERROR.getCode()));
+//        }
+        return baseResponse;
     }
 
     public String getUploadFilePath(MultipartFile file) {

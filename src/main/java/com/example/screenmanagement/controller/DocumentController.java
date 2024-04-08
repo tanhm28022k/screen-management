@@ -1,7 +1,9 @@
 package com.example.screenmanagement.controller;
 
 import com.example.screenmanagement.common.BaseResponse;
+import com.example.screenmanagement.model.request.device.SearchDeviceReq;
 import com.example.screenmanagement.service.impl.DocumentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/document")
 @CrossOrigin
-public class UploadDocumentController {
+public class DocumentController {
     @Autowired
     DocumentService documentService;
 
@@ -25,6 +27,18 @@ public class UploadDocumentController {
     @GetMapping()
     public ResponseEntity<BaseResponse> getAll() {
         BaseResponse baseResponse = documentService.getList();
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse> getById(@PathVariable String id) {
+        BaseResponse baseResponse = documentService.getById(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<BaseResponse> search(@RequestBody @Valid SearchDeviceReq req) {
+        BaseResponse baseResponse = documentService.searchDocument(req);
         return ResponseEntity.ok(baseResponse);
     }
 

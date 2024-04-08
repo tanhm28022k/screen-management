@@ -1,0 +1,11 @@
+
+[	java:S112<"FDefine and throw a dedicated exception instead of using a generic one.(œÌ©º
+‚
+java:S1130<"lRemove the declaration of thrown exception 'java.lang.Exception', as it cannot be thrown from method's body.(œÌ©º
+<
+java:S1452<"&Remove usage of generic wildcard type.(œÌ©º
+
+java:S1128
+"dRemove this unused import 'com.example.screenmanagement.model.response.user.UserDetailAuthResponse'.(ıØø­ıÿÿÿÿ
+p
+java:S1128"URemove this unused import 'com.example.screenmanagement.repository.DeviceRepository'.( ±§µşÿÿÿÿ

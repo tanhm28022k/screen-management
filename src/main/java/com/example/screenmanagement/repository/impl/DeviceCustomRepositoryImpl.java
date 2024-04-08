@@ -40,7 +40,7 @@ public class DeviceCustomRepositoryImpl extends BaseRepositoryImpl implements De
                           from device t
                           join region_device rd on t.id = rd.device_id
                           join region r on rd.region_id = r.id
-                          where 1=1 
+                          where 1=1 and t.is_deleted <> 1
                 """);
         HashMap<String, Object> params = new HashMap<>();
         if (userId != null) {

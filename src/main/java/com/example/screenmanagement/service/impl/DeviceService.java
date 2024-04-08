@@ -12,6 +12,7 @@ import com.example.screenmanagement.model.request.device.SearchDeviceReq;
 import com.example.screenmanagement.model.response.device.DeviceDtoResponse;
 import com.example.screenmanagement.repository.DeviceRepository;
 import com.example.screenmanagement.repository.RegionDeviceRepository;
+import com.example.screenmanagement.repository.RegionRepository;
 import com.example.screenmanagement.repository.UserRepository;
 import com.example.screenmanagement.repository.custom.DeviceCustomRepository;
 import com.example.screenmanagement.repository.impl.BaseResultSelect;
@@ -24,11 +25,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
+import static com.example.screenmanagement.utility.Constant.DefaultValue.REGION_DEFAULT_INIT_SAVE_DEVICE;
 import static com.example.screenmanagement.utility.Constant.ERROR_CODE_MAP.*;
 
 @Service
@@ -45,6 +49,9 @@ public class DeviceService implements IDeviceService {
 
     @Autowired
     private RegionDeviceRepository regionDeviceRepository;
+
+    @Autowired
+    private RegionRepository repository;
 
     @Override
     public BaseResponse getListByUserId() {
@@ -72,7 +79,16 @@ public class DeviceService implements IDeviceService {
             BeanUtils.copyProperties(createDeviceRequest, device);
             device.setUserId(fromAuthentication.getId());
             device.setUpdDatetime(Calendar.getInstance().getTime());
-            deviceRepository.save(device);
+            Device savedDevice = deviceRepository.save(device);
+            logger.info("start save region, region_device...");
+
+            RegionDevice regionCommon = regionDeviceRepository.findById(REGION_DEFAULT_INIT_SAVE_DEVICE)
+                    .orElseThrow(() -> new RuntimeException("Không tồn tại khu vực kho lưu trữ chung các thiết bị"));
+            RegionDevice regionDevice = RegionDevice.builder()
+                    .deviceId(savedDevice.getId())
+                    .regionId(regionCommon.getId())
+                    .build();
+            regionDeviceRepository.save(regionDevice);
             return baseResponse;
         } catch (Exception ex) {
             logger.info("save device error : {} ", ex.getMessage());
@@ -110,11 +126,19 @@ public class DeviceService implements IDeviceService {
             BeanUtils.copyProperties(req, device);
             device.setUpdDatetime(Calendar.getInstance().getTime());
             Device save = deviceRepository.save(device);
+            RegionDevice regionCommon = regionDeviceRepository.findById(REGION_DEFAULT_INIT_SAVE_DEVICE)
+                    .orElseThrow(() -> new RuntimeException("Không tồn tại khu vực kho lưu trữ chung các thiết bị"));
+            RegionDevice regionDevice = RegionDevice.builder()
+                    .deviceId(save.getId())
+                    .regionId(regionCommon.getId())
+                    .build();
+            regionDeviceRepository.save(regionDevice);
             baseResponse.setData(save);
             return baseResponse;
         } catch (Exception ex) {
             logger.info("send info device has errors...{}", ex.getMessage());
-            baseResponse.setResult(new Result(SAVE_DEVICE_ERROR.getMessage(), false, SAVE_DEVICE_ERROR.getCode()));
+            logger.info("get document error : {} ", ex.getMessage());
+            baseResponse.setResult(new Result(ex.getMessage(), false, "Lỗi hệ thống"));
         }
         return null;
     }
@@ -126,8 +150,8 @@ public class DeviceService implements IDeviceService {
         try {
             User fromAuthentication = getFromAuthentication(SecurityUtils.getAuthenticatedUserDetails().getUsername());
             BaseResultSelect baseResultSelect = deviceCustomRepository.searchData(req.getName(),
-                    req.getPage(), req.getSize(), fromAuthentication.getId(),req.getRegionId());
-            PageImpl<DeviceDtoResponse> deviceDtoResponses = new PageImpl<DeviceDtoResponse>(baseResultSelect.getListData(),
+                    req.getPage(), req.getSize(), fromAuthentication.getId(), req.getRegionId());
+            PageImpl<DeviceDtoResponse> deviceDtoResponses = new PageImpl<>(baseResultSelect.getListData(),
                     PageRequest.of(req.getPage(), req.getSize()), baseResultSelect.getCount());
             baseResponse.setData(deviceDtoResponses);
         } catch (Exception ex) {
@@ -143,10 +167,7 @@ public class DeviceService implements IDeviceService {
         deviceRepository.findById(id).ifPresentOrElse(device -> {
             baseResponse.setResult(Result.OK("Success"));
             baseResponse.setData(device);
-        }, () -> {
-            baseResponse.setResult(new Result("Không tồn tại thiết bị có id:" + id,
-                    false, DETAIL_DEVICE_ERROR.getCode()));
-        });
+        }, () -> baseResponse.setResult(new Result("Không tồn tại thiết bị có id:" + id, false, DETAIL_DEVICE_ERROR.getCode())));
         return baseResponse;
     }
 
@@ -155,7 +176,13 @@ public class DeviceService implements IDeviceService {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setResult(Result.OK("Success"));
         try {
-            deviceRepository.deleteAllById(ids);
+            logger.info("start delete devices...");
+            List<Device> devices = deviceRepository.findAllById(ids);
+            if (!CollectionUtils.isEmpty(devices) && (devices.size() != ids.size())) {
+                throw new RuntimeException(MessageFormat.format("Một số thiết bị không tồn tại: {0}", ids));
+            }
+            devices.forEach(device -> device.setIsDeleted(Boolean.TRUE));
+            deviceRepository.saveAll(devices);
         } catch (Exception ex) {
             logger.info("delete devices has errors...{}", ex.getMessage());
             baseResponse.setResult(new Result("Xóa thiết bị lỗi ids: {}" + ids,
@@ -165,29 +192,35 @@ public class DeviceService implements IDeviceService {
     }
 
     @Override
-    public BaseResponse moveDevices(MoveDeviceReq req) {
+    public BaseResponse moveDevices(List<MoveDeviceReq> reqs) {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setResult(Result.OK("Success"));
         try {
-            Optional<Device> device = deviceRepository.findById(req.getDeviceId());
-            if (device.isEmpty()) {
-                throw new RuntimeException("Device cannot exist");
+            logger.info("start log moveDevices...");
+            List<String> deviceIds = reqs.stream().map(MoveDeviceReq::getDeviceId).toList();
+            List<Device> devices = deviceRepository.findAllById(deviceIds);
+            if (!CollectionUtils.isEmpty(devices) || devices.size() != deviceIds.size()) {
+                throw new RuntimeException("Devices cannot exist");
             }
-            RegionDevice regionDevice = regionDeviceRepository.findFirstByDeviceIdAndRegionId(req.getDeviceId(), req.getNewRegionId())
-                    .orElseThrow(() -> new RuntimeException("Can not move this device"));
-            regionDevice.setRegionId(req.getNewRegionId());
-            RegionDevice save = regionDeviceRepository.save(regionDevice);
-            baseResponse.setData(save);
+            List<RegionDevice> updates = new ArrayList<>();
+            reqs.forEach(req -> regionDeviceRepository.findFirstByDeviceIdAndRegionId(req.getDeviceId(), req.getNewRegionId())
+                    .ifPresentOrElse(regionDevice -> {
+                        regionDevice.setRegionId(req.getNewRegionId());
+                        updates.add(regionDevice);
+                    }, () -> {
+                        throw new RuntimeException("Cannot move this device");
+                    }));
+            if (!CollectionUtils.isEmpty(updates)) {
+                regionDeviceRepository.saveAll(updates);
+            }
         } catch (Exception ex) {
             logger.info("move device has errors...{}", ex.getMessage());
-            baseResponse.setResult(new Result("move device has errors",
-                    false, MOVE_DEVICE_ERROR.getCode()));
+            baseResponse.setResult(new Result(ex.getMessage(), false, "Lỗi hệ thống"));
         }
         return baseResponse;
     }
 
     public User getFromAuthentication(String username) {
-        User user = userRepository.findFirstByUsername(username);
-        return user;
+        return userRepository.findFirstByUsername(username);
     }
 }

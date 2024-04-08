@@ -50,8 +50,8 @@ public class DeviceController {
     }
 
     @PutMapping("/move")
-    public ResponseEntity<BaseResponse> moveDevice(@RequestBody @Valid MoveDeviceReq req) {
-        BaseResponse baseResponse = deviceService.moveDevices(req);
+    public ResponseEntity<BaseResponse> moveDevice(@RequestBody @Valid List<MoveDeviceReq> requests) {
+        BaseResponse baseResponse = deviceService.moveDevices(requests);
         return ResponseEntity.ok(baseResponse);
     }
 

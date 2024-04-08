@@ -35,8 +35,6 @@ public class RegionServiceImpl implements RegionService {
                 Region regionParent = regionRepository.findFirstById(req.getParentId());
                 if (regionParent == null) {
                     throw new RuntimeException("Region cha không tồn tại");
-                } else {
-                    if (null != regionParent.getParentId()) throw new RuntimeException("Vui lòng chọn region cha");
                 }
             }
             log.info("start save region...");

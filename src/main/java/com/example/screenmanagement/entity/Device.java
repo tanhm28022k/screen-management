@@ -80,4 +80,7 @@ public class Device {
     @Column(name = "upd_datetime")
     private Date updDatetime;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = Boolean.FALSE;
+
 }
