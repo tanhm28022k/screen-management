@@ -52,7 +52,6 @@ public class AuthController {
     private DeviceService deviceService;
     @PostMapping(value = "/login")
     public ResponseEntity<BaseResponse> login(@RequestBody @Valid LoginRequest request) {
-
         BaseResponse response = authenticate(request.getUsername().toLowerCase(), request.getPassword(), request.getCreateDeviceData());
         return ResponseEntity.ok(response);
     }
@@ -79,6 +78,7 @@ public class AuthController {
             UserDetails userDetails = (UserDetails) authenticationResponse.getPrincipal();
 
             String token = jwtTokenUtil.generateToken(userDetails);
+
             //lưu thong tin device user dang nhap
             if(createDeviceData != null) {
                 deviceService.saveDevice(createDeviceData, username);

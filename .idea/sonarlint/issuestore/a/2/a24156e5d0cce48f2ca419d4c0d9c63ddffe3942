@@ -1,0 +1,8 @@
+
+P
+java:S1118
+":Add a private constructor to hide the implicit public one.(Ò®ÜÄ
+Y
+java:S18541">Remove this useless assignment to local variable "currentDay".(åĞúÈûÿÿÿÿ
+J
+java:S14811"/Remove this unused "currentDay" local variable.(åĞúÈûÿÿÿÿ

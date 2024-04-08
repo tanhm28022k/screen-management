@@ -1,5 +1,6 @@
 package com.example.screenmanagement.utility;
 
+import com.example.screenmanagement.entity.User;
 import com.example.screenmanagement.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -72,6 +73,11 @@ public class JwtTokenUtil implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         String username = extractUsernameFromToken(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public User getFromAuthentication() {
+        UserDetails userDetails = SecurityUtils.getAuthenticatedUserDetails();
+        return userRepository.findFirstByUsername(userDetails.getUsername());
     }
 
 
