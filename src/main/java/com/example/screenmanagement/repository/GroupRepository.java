@@ -1,6 +1,6 @@
 package com.example.screenmanagement.repository;
 
-import com.example.screenmanagement.entity.GroupOrg;
+import com.example.screenmanagement.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface GroupRepository extends JpaRepository<GroupOrg, String>, JpaSpecificationExecutor<GroupOrg> {
+public interface GroupRepository extends JpaRepository<Group, String>, JpaSpecificationExecutor<Group> {
 
-    Optional<GroupOrg> findById(String id);
+    Optional<Group> findById(String id);
 
 }

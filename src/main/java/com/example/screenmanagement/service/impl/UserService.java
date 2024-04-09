@@ -60,6 +60,10 @@ public class UserService implements UserDetailsService, IUserService {
         }
     }
 
+    public User getFromAuthentication(String username) {
+        User user = userRepository.findFirstByUsername(username);
+        return user;
+    }
     private Collection<? extends GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roles) {

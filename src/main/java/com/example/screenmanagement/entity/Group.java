@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -18,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Table(name = "group_org")
-public class GroupOrg {
+public class Group {
 
     @Id
     @Column(name = "id")

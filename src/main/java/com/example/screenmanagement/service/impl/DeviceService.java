@@ -10,6 +10,7 @@ import com.example.screenmanagement.model.request.device.InfoDeviceRequest;
 import com.example.screenmanagement.model.request.device.MoveDeviceReq;
 import com.example.screenmanagement.model.request.device.SearchDeviceReq;
 import com.example.screenmanagement.model.response.device.DeviceDtoResponse;
+import com.example.screenmanagement.model.response.device.DeviceResponse;
 import com.example.screenmanagement.repository.DeviceRepository;
 import com.example.screenmanagement.repository.RegionDeviceRepository;
 import com.example.screenmanagement.repository.RegionRepository;
@@ -17,6 +18,7 @@ import com.example.screenmanagement.repository.UserRepository;
 import com.example.screenmanagement.repository.custom.DeviceCustomRepository;
 import com.example.screenmanagement.repository.impl.BaseResultSelect;
 import com.example.screenmanagement.service.iservice.IDeviceService;
+import com.example.screenmanagement.utility.Constant;
 import com.example.screenmanagement.utility.SecurityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,18 +55,26 @@ public class DeviceService implements IDeviceService {
     @Autowired
     private RegionRepository repository;
 
+    @Autowired
+    UserService userService;
     @Override
     public BaseResponse getListByUserId() {
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setResult(Result.OK("Success"));
         try {
-            User fromAuthentication = getFromAuthentication(SecurityUtils.getAuthenticatedUserDetails().getUsername());
+            User fromAuthentication = userService.getFromAuthentication(SecurityUtils.getAuthenticatedUserDetails().getUsername());
             List<Device> devices = deviceRepository.findByUserId(fromAuthentication.getId());
-            baseResponse.setData(devices);
+            List<DeviceResponse> list = devices.stream().map(device -> {
+                DeviceResponse deviceResponse = new DeviceResponse();
+                BeanUtils.copyProperties(device, deviceResponse);
+                deviceResponse.setTimeOffAgo(formatTime(device.getTimeOffAgo()));
+                return deviceResponse;
+            }).toList();
+            baseResponse.setData(list);
             return baseResponse;
         } catch (Exception ex) {
             logger.info("save device error : {} ", ex.getMessage());
-            baseResponse.setResult(new Result(SAVE_DEVICE_ERROR.getMessage(), false, SAVE_DEVICE_ERROR.getCode()));
+            baseResponse.setResult(new Result(Constant.ERROR_CODE_MAP.SAVE_DEVICE_ERROR.getMessage(), false, Constant.ERROR_CODE_MAP.SAVE_DEVICE_ERROR.getCode()));
             return baseResponse;
         }
     }
@@ -222,5 +232,25 @@ public class DeviceService implements IDeviceService {
 
     public User getFromAuthentication(String username) {
         return userRepository.findFirstByUsername(username);
+    }
+
+    public String formatTime(long milisecond) {
+        long seconds = milisecond/1000;
+        if (seconds < 60) {
+            return seconds + " seconds ago";
+        }
+
+        long minutes = seconds / 60;
+        if (minutes < 60) {
+            return minutes + " minutes ago";
+        }
+
+        long hours = minutes /60;
+        if (hours < 24) {
+            return hours + " hours ago";
+        }
+
+        long days = hours / 24;
+        return days + " days ago";
     }
 }
